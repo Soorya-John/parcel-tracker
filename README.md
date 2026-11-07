@@ -2,6 +2,10 @@
 
 A single-owner parcel tracker for shipments within, into, and out of India. Saved Parcels is the home screen; delivered parcels keep their full history in a searchable archive. A static, mobile-friendly frontend runs on GitHub Pages. A Cloudflare Worker owns authentication, 17TRACK integration, D1 persistence, webhook verification, and Resend email digests.
 
+Public frontend: https://soorya-john.github.io/parcel-tracker/ · Source: https://github.com/Soorya-John/parcel-tracker
+
+The public site starts with fictional demo parcels. Real parcel data remains behind the separately configured Worker authentication.
+
 ## Run locally
 
 Requires Node.js 24 and npm. On Windows PowerShell, use `npm.cmd` / `npx.cmd` if the execution policy blocks `.ps1` wrappers.
@@ -90,7 +94,7 @@ The production bundle uses relative asset URLs; both a root site and `/parcel-tr
 1. Push this repository to GitHub.
 2. In **Settings → Pages**, select **GitHub Actions** as the build source.
 3. Set the repository Actions variable `VITE_API_URL` to `https://YOUR-WORKER.workers.dev/api`. This is a public URL, never a key.
-4. Run **Deploy GitHub Pages** from Actions. It is manual so a new repository does not attempt a deployment before Pages is configured. Private-repository Pages availability depends on your GitHub plan; use a public frontend repository if your plan requires it.
+4. Run **Deploy GitHub Pages** from Actions, or push a frontend change to `main`. This repository is public and Pages is enabled with GitHub Actions as its build source.
 
 The included workflow builds `dist`, uploads the Pages artifact, and deploys it with GitHub's Pages action. You can also leave `VITE_API_URL` unset and supply the Worker URL under **Connect your account → Backend connection**. In a new browser this starts in the labelled demo until sign-in; private parcel data is never bundled or served by Pages. No Cloudflare or provider deployment is automatically performed by the GitHub workflow.
 
