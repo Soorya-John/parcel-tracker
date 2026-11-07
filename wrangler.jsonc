@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "parcel-tracker-api",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-11-01",
+  "d1_databases": [{ "binding": "DB", "database_name": "parcel-tracker", "database_id": "REPLACE_WITH_D1_DATABASE_ID", "migrations_dir": "migrations" }],
+  "triggers": { "crons": ["0 */2 * * *"] },
+  "vars": { "ALLOWED_ORIGIN": "http://localhost:5173", "OWNER_EMAIL": "owner@example.com", "EMAIL_FROM": "Parcel <parcels@example.com>" },
+  "observability": { "enabled": true }
+}
