@@ -38,7 +38,7 @@ if (locked) {
     writeFileSync(secretsPath + '.tmp', safeStorage.encryptString(JSON.stringify(next)));
     renameSync(secretsPath + '.tmp', secretsPath);
     settings = next; settingsError = null; service.configure(next);
-    if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: !!next.launchAtLogin, args: ['--hidden'] });
+    if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: !!next.launchAtLogin, path: process.env.PORTABLE_EXECUTABLE_FILE || app.getPath('exe'), args: ['--hidden'] });
     return { saved: true };
   });
   handle('parcel:sync', () => service.sync());
