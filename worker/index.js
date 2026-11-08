@@ -228,6 +228,7 @@ export function formatIST(time) {
   return new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' }).format(new Date(time)) + ' IST';
 }
 export async function maintenance(env) {
+  const failures = [];
   await catalog(env, true);
   for (const parcel of await rows(env, "SELECT * FROM parcels WHERE registration <> 'registered' AND delivered=0")) await register(env, parcel);
   const active = await rows(env, "SELECT * FROM parcels WHERE registration='registered' AND delivered=0");
@@ -235,13 +236,14 @@ export async function maintenance(env) {
     try {
       const data = await provider(env, 'gettrackinfo', active.slice(i, i + 40).map(p => ({ number: p.number, carrier: p.carrier })));
       for (const item of data.accepted || []) await ingest(env, item);
-    } catch (e) { console.warn('Tracking reconciliation failed:', e.message); }
+    } catch (e) { console.warn('Tracking reconciliation failed:', e.message); failures.push(e.message); }
   }
   for (const parcel of await rows(env, "SELECT * FROM parcels WHERE delivered=1 AND stopped=0 AND registration='registered'")) {
     try { accepted(await provider(env, 'stoptrack', [{ number: parcel.number, carrier: parcel.carrier }])); await run(env, 'UPDATE parcels SET stopped=1 WHERE id=?', parcel.id); }
     catch (e) { console.warn('Stop tracking will retry:', e.message); }
   }
   await run(env, 'DELETE FROM auth_attempts WHERE bucket NOT LIKE ?', `%:${Math.floor(Date.now() / 900000)}`);
+  if (env.DESKTOP && failures.length) throw new Error([...new Set(failures)].join('; '));
 }
 async function route(req, env) {
   const path = new URL(req.url).pathname;

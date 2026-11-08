@@ -1,0 +1,8 @@
+{
+  "appId": "com.parceltracker.mobile",
+  "appName": "Parcel",
+  "webDir": "dist",
+  "loggingBehavior": "none",
+  "server": { "androidScheme": "https" },
+  "android": { "allowMixedContent": false, "webContentsDebuggingEnabled": false }
+}

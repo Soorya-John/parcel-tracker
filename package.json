@@ -1,6 +1,6 @@
 {
   "name": "parcel-tracker",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,14 +10,63 @@
     "worker:dev": "wrangler dev --port 8787",
     "db:local": "wrangler d1 migrations apply DB --local",
     "test": "node --test --test-concurrency=1 test/backend.test.js",
-    "test:browser": "node test/browser.mjs",
+    "test:browser": "node test/electron.mjs",
     "password": "node scripts/password.mjs",
-    "catalog:update": "node scripts/catalog.mjs"
+    "catalog:update": "node scripts/catalog.mjs",
+    "start": "npm run build && electron .",
+    "dist:win": "npm run build && electron-builder --win nsis portable --x64 --publish never",
+    "test:desktop": "node --test test/desktop.test.js",
+    "test:electron": "node test/electron.mjs",
+    "android:sync": "npm run build && cap sync android",
+    "android:build": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-android.ps1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.6.0",
     "@playwright/test": "^1.56.1",
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0",
     "miniflare": "^5.20261104.0-beta",
     "vite": "^7.2.2",
     "wrangler": "^4.45.0"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/core": "^8.6.0"
+  },
+  "description": "Private desktop parcel tracking for Windows and Android",
+  "author": "Soorya John",
+  "main": "desktop/main.js",
+  "build": {
+    "appId": "com.parceltracker.desktop",
+    "productName": "Parcel",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "desktop/**/*",
+      "worker/**/*",
+      "migrations/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "artifactName": "Parcel-${version}-Setup-${arch}.${ext}",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "runAfterFinish": false
+    },
+    "npmRebuild": false,
+    "portable": {
+      "artifactName": "Parcel-${version}-Portable-${arch}.${ext}"
+    }
   }
 }

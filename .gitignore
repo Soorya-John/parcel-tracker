@@ -7,3 +7,8 @@ dist/
 test-results/
 playwright-report/
 *.log
+
+release/
+*.jks
+*.keystore
+android/local.properties
